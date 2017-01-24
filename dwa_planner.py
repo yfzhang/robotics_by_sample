@@ -7,6 +7,7 @@ class DWAPlanner:
     """
     naive implementation of "the dynamic window approach to collision avoidance" 1997
     """
+    # TODO: add rotate away recovery behavior
 
     def __init__(self):
         self.state = np.array([0, 0, math.pi / 4, 0, 0])  # [x, y, yaw, v_linear, v_angular]
@@ -119,12 +120,14 @@ class DWAPlanner:
     def calc_heading_objective(self, state):
         theta = math.degrees(state[2])
         # TODO: check the math
+        # use atan2 which takes input sign into consideration and limits output between -PI and PI
         goal_theta = math.degrees(math.atan2((self.goal[1] - state[1]), (self.goal[0] - state[0])))
         # print("[theta, goal_theta]: [%f, %f]", theta, goal_theta)
         objective = 180.0 - abs(goal_theta - theta)
         return objective
 
     def calc_dist_objective(self, state):
+        # TODO: find the minimal distance between obstacle and the curvature (not the end point)
         objective = 10
         # find the minimum distance
         for obstacle in self.obstacles:
